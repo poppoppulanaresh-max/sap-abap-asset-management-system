@@ -1,0 +1,29 @@
+REPORT zemployee_report_dt1.
+
+TABLES: zemployee_dt1.
+
+DATA: lt_employee TYPE TABLE OF zemployee_dt1,
+      ls_employee TYPE zemployee_dt1.
+
+*------------------------------------------------------------------
+* Fetch Employee Data
+*------------------------------------------------------------------
+SELECT *
+  INTO TABLE lt_employee
+  FROM zemployee_dt1.
+
+*------------------------------------------------------------------
+* Display Employee Data
+*------------------------------------------------------------------
+LOOP AT lt_employee INTO ls_employee.
+
+  WRITE: / 'Employee ID   :', ls_employee-emp_id.
+  WRITE: / 'Employee Name :', ls_employee-emp_name.
+  WRITE: / 'Department    :', ls_employee-department.
+  WRITE: / 'Phone         :', ls_employee-phone.
+  WRITE: / 'Email         :', ls_employee-email.
+  WRITE: / 'Status        :', ls_employee-status.
+
+  WRITE: / '----------------------------------------'.
+
+ENDLOOP.

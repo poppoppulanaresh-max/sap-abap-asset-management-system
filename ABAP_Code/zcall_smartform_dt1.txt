@@ -1,0 +1,72 @@
+REPORT zcall_smartform_dt1.
+
+DATA:
+  lv_fm_name      TYPE rs38l_fnam,
+  ls_control      TYPE ssfctrlop,
+  ls_output       TYPE ssfcompop,
+
+  lv_emp_name     TYPE zemployee_dt1-emp_name,
+  lv_department   TYPE zemployee_dt1-department,
+
+  lv_asset_name   TYPE zasset_dt1-asset_name,
+  lv_category     TYPE zasset_dt1-category,
+
+  lv_alloc_date   TYPE zalloc_dt1-alloc_date.
+
+* Smart Form Preview Settings
+ls_control-preview   = 'X'.
+ls_control-no_dialog = 'X'.
+ls_control-device    = 'PRINTER'.
+
+ls_output-tddest = 'LP01'.
+
+*------------------------------------------------------------------
+* Fetch Employee Details
+*------------------------------------------------------------------
+SELECT SINGLE emp_name department
+  INTO (lv_emp_name, lv_department)
+  FROM zemployee_dt1
+  WHERE emp_id = '10001'.
+
+*------------------------------------------------------------------
+* Fetch Asset Details
+*------------------------------------------------------------------
+SELECT SINGLE asset_name category
+  INTO (lv_asset_name, lv_category)
+  FROM zasset_dt1
+  WHERE asset_id = '50001'.
+
+*------------------------------------------------------------------
+* Fetch Allocation Date
+*------------------------------------------------------------------
+SELECT SINGLE alloc_date
+  INTO lv_alloc_date
+  FROM zalloc_dt1
+  WHERE emp_id   = '10001'
+    AND asset_id = '50001'.
+
+*------------------------------------------------------------------
+* Get Generated Smart Form Function Module
+*------------------------------------------------------------------
+CALL FUNCTION 'SSF_FUNCTION_MODULE_NAME'
+  EXPORTING
+    formname = 'ZASSET_FORM_DT1'
+  IMPORTING
+    fm_name  = lv_fm_name.
+
+*------------------------------------------------------------------
+* Call Smart Form
+*------------------------------------------------------------------
+CALL FUNCTION lv_fm_name
+  EXPORTING
+    control_parameters = ls_control
+    output_options     = ls_output
+    user_settings      = space
+
+    iv_emp_name        = lv_emp_name
+    iv_department      = lv_department
+
+    iv_asset_name      = lv_asset_name
+    iv_category        = lv_category
+
+    iv_alloc_date      = lv_alloc_date.

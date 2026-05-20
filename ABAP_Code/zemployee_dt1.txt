@@ -1,0 +1,23 @@
+REPORT zemployee_alv_dt1.
+
+TABLES: zemployee_dt1.
+
+DATA:
+  lt_employee TYPE TABLE OF zemployee_dt1.
+
+*------------------------------------------------------------------
+* Fetch Employee Data
+*------------------------------------------------------------------
+SELECT *
+  INTO TABLE lt_employee
+  FROM zemployee_dt1.
+
+*------------------------------------------------------------------
+* Display ALV Report
+*------------------------------------------------------------------
+CALL FUNCTION 'REUSE_ALV_GRID_DISPLAY'
+  EXPORTING
+    i_structure_name = 'ZEMPLOYEE_DT1'
+
+  TABLES
+    t_outtab         = lt_employee.
